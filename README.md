@@ -1,10 +1,10 @@
-# Notes & Garden
+# Note
 
-一个个人博客 / 数字花园。轻、淡、克制，主体是一个 3D 滚筒形式的文章浏览体验，每张卡片用 iOS Liquid Glass 风格的液态玻璃质感呈现。
+个人博客 / 数字花园。轻、淡、克制，主体是一个 3D 滚筒形式的文章浏览体验，每张卡片用 iOS Liquid Glass 风格的液态玻璃质感呈现。
+
+[Notes & Garden](https://wrenink.github.io/xiaocheng_self_web/)
 
 ![Notes & Garden](./.github/preview.png)
-
-> 截图占位 —— 跑起来后截图替换成 `.github/preview.png` 即可。
 
 ## 特性
 
@@ -23,15 +23,6 @@
 - [Framer Motion](https://www.framer.com/motion/)
 - [unified](https://unifiedjs.com) + [rehype-pretty-code](https://rehype-pretty-code.netlify.app) + [Shiki](https://shiki.style)
 - `next/font` 自托管字体（Inter / Source Serif 4 / Noto Sans SC / Noto Serif SC / JetBrains Mono）
-
-## 本地运行
-
-```bash
-npm install --legacy-peer-deps
-npm run dev
-```
-
-浏览器打开 http://localhost:3000
 
 ## 写一篇博客
 
@@ -55,26 +46,11 @@ maturity: "seedling"  # seedling | budding | evergreen
 const x = 1;
 const y = 2; // 这一行会被高亮
 ```
-```
+
 
 保存后,新的卡片会自动出现在滚筒里。
 
-## 部署到 GitHub Pages
-
-项目自带 GitHub Actions workflow ([`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml))。
-
-1. **推到 GitHub** —— 把代码 push 到新建的仓库
-2. **打开 Pages**: 仓库 Settings → Pages → Source 选 **"GitHub Actions"**
-3. 等 Actions 跑完(2-3 分钟)
-4. 访问 `https://<你的用户名>.github.io/<仓库名>/`
-
-仓库名规则:
-- 取名 `<你的用户名>.github.io` → 站点挂根域名
-- 其他名字 → 站点挂在 `/<仓库名>/` 子路径下（workflow 自动检测 basePath）
-- **不要**取名 `blog`(会导致 `/blog/blog/foo` 的尴尬路径)
-
 ## 项目结构
-
 ```
 app/
 ├── layout.tsx          # 根 layout, 字体加载, 桌宠挂载
@@ -105,7 +81,7 @@ content/posts/          # 博客 MDX 文件
 
 **为什么是液态玻璃**: 站点底色是奶白色,文字是深色,中间需要一层「半透明的容器」让内容浮起来又不喧宾夺主。iOS 26 / macOS Tahoe 的 Liquid Glass 是这个问题的成熟解答。
 
-**为什么有桌宠**: 没必要,但好玩。一个会眨眼会被拖动会随路由换话的小像素角色,让站点从「内容容器」变成「有人在家」。
+**为什么有桌宠**: 没必要,但好玩。一个会眨眼会被拖动的claude。
 
 ## License
 
