@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
@@ -9,6 +8,9 @@ const links = [
   { label: "GitHub", href: "https://github.com/WrenInk" },
 ];
 
+// Resolve basePath at build time so the avatar URL works on GH Pages.
+const BP = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export default function AboutPage() {
   return (
     <div className="min-h-dvh flex items-center px-6 sm:px-10 pt-24 pb-16">
@@ -16,16 +18,13 @@ export default function AboutPage() {
         <div className="glass glass-inner-glow rounded-[28px] p-10 relative overflow-hidden">
           <span className="glass-gloss rounded-[28px]" />
           <div className="relative z-10">
-            <div className="w-24 h-24 rounded-full overflow-hidden mb-6 ring-1 ring-white/70 shadow-[0_6px_18px_-6px_rgba(15,23,42,0.18)] bg-gradient-to-br from-[var(--color-accent-soft)] to-[var(--color-canvas-warm)]">
-              <Image
-                src="/avatar.jpg"
-                alt="小城染墨"
-                width={96}
-                height={96}
-                className="w-full h-full object-cover"
-                priority
-              />
-            </div>
+            <div
+              role="img"
+              aria-label="小城染墨"
+              className="w-24 h-24 rounded-full mb-6 ring-1 ring-white/70 shadow-[0_6px_18px_-6px_rgba(15,23,42,0.18)] bg-gradient-to-br from-[var(--color-accent-soft)] to-[var(--color-canvas-warm)] bg-cover bg-center"
+              style={{ backgroundImage: `url('${BP}/avatar.jpg')` }}
+            />
+
             <h1 className="text-[28px] font-semibold tracking-[-0.02em] mb-4 text-[var(--color-ink)]">
               关于
             </h1>
