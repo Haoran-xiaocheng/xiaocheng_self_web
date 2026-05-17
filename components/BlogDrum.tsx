@@ -185,23 +185,8 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
     }
   }, [opened]);
 
-  // Keep the active tile centered in the timeline rail. Once there are more
-  // posts than fit, this is the only thing keeping you from losing track of
-  // where you are after scrolling the drum.
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const tile = rail.querySelector<HTMLElement>(`[data-tile-index="${active}"]`);
-    if (!tile) return;
-    const railRect = rail.getBoundingClientRect();
-    const tileRect = tile.getBoundingClientRect();
-    const delta =
-      tileRect.left + tileRect.width / 2 - (railRect.left + railRect.width / 2);
-    rail.scrollBy({
-      left: delta,
-      behavior: reduce ? "auto" : "smooth",
-    });
-  }, [active, reduce]);
+  // Rail is now cyclic via transform — no scroll, no auto-center effect
+  // needed. Tile positions are derived from `active` directly.
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (opened || closing) return;
@@ -326,7 +311,10 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
         )}
       </AnimatePresence>
 
-      {/* Timeline rail */}
+      {/* Timeline rail — cyclic, mirrors the drum's wrap behavior.
+          Tiles are absolutely positioned by cyclic offset from active.
+          Wheeling the drum past the last post slides the tile strip
+          continuously instead of hitting a left/right end. */}
       <motion.div
         className="absolute bottom-6 left-0 right-0 px-6 sm:px-10"
         animate={{ opacity: opened ? 0 : 1, y: opened ? 12 : 0 }}
@@ -334,32 +322,60 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
         style={{ pointerEvents: opened ? "none" : "auto" }}
       >
         <div className="max-w-3xl mx-auto">
-          <div className="glass glass-inner-glow rounded-2xl px-3 py-3 relative overflow-hidden">
+          <div
+            ref={railRef}
+            className="glass glass-inner-glow rounded-2xl py-3 relative overflow-hidden h-[68px]"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent 0, #000 36px, #000 calc(100% - 36px), transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0, #000 36px, #000 calc(100% - 36px), transparent 100%)",
+            }}
+          >
             <span className="glass-gloss rounded-2xl" />
-            <div
-              ref={railRef}
-              className="relative z-10 flex items-stretch gap-1 overflow-x-auto no-scrollbar scroll-smooth"
-              style={{
-                maskImage:
-                  "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-                WebkitMaskImage:
-                  "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-              }}
-            >
+            {/* Center anchor — tiles position themselves via x relative to this point */}
+            <div className="relative z-10 h-full w-full">
               {posts.map((p, i) => {
-                const isActive = i === active;
+                // Same cyclic-distance math as the drum: find shortest
+                // signed offset, so wrap-around files slide the short way.
+                let offset = i - active;
+                if (offset > N / 2) offset -= N;
+                else if (offset < -N / 2) offset += N;
+                const TILE_PITCH = 100; // 96px tile + 4px gap
+                const x = offset * TILE_PITCH;
+                const dist = Math.abs(offset);
+                const isActive = offset === 0;
+                // Soft fade for far tiles; threshold is generous so small
+                // post counts always show everything.
+                const opacity = dist <= 5 ? 1 - dist * 0.08 : 0;
+                const pointerEnabled = dist <= 5;
                 return (
-                  <button
+                  <motion.button
                     key={p.slug}
-                    data-tile-index={i}
                     onClick={() => {
                       if (closing) return;
                       setActive(i);
                     }}
-                    className="group relative flex-1 min-w-[96px] text-left px-2.5 py-1.5 rounded-lg transition-colors"
+                    className="group absolute top-1/2 text-left rounded-lg px-2.5 py-1.5 transition-colors"
                     aria-label={`Go to ${p.title}`}
                     aria-current={isActive}
+                    initial={false}
+                    animate={{ x, opacity }}
+                    transition={{ type: "spring", stiffness: 220, damping: 28, mass: 0.7 }}
+                    style={{
+                      left: "50%",
+                      width: 96,
+                      marginLeft: -48,
+                      marginTop: -22,
+                      pointerEvents: pointerEnabled ? "auto" : "none",
+                    }}
                   >
+                    {isActive && (
+                      <span
+                        className="absolute inset-0 rounded-lg border border-[var(--color-ink)]/15 bg-white/30"
+                        style={{ zIndex: -1 }}
+                      />
+                    )}
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <span className={`w-1 h-1 rounded-full ${MATURITY_DOT[p.maturity]}`} />
                       <span
@@ -381,15 +397,7 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
                     >
                       {p.title}
                     </div>
-                    {isActive && (
-                      <motion.div
-                        layoutId="timeline-cursor"
-                        className="absolute inset-0 rounded-lg border border-[var(--color-ink)]/15 bg-white/30"
-                        transition={{ type: "spring", stiffness: 320, damping: 30 }}
-                        style={{ zIndex: -1 }}
-                      />
-                    )}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
