@@ -69,6 +69,7 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
   const lastWheelAt = useRef(0);
   const touchStartX = useRef<number | null>(null);
   const drumRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
 
   const N = posts.length;
 
@@ -183,6 +184,24 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
       return () => document.body.classList.remove("no-scroll");
     }
   }, [opened]);
+
+  // Keep the active tile centered in the timeline rail. Once there are more
+  // posts than fit, this is the only thing keeping you from losing track of
+  // where you are after scrolling the drum.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const tile = rail.querySelector<HTMLElement>(`[data-tile-index="${active}"]`);
+    if (!tile) return;
+    const railRect = rail.getBoundingClientRect();
+    const tileRect = tile.getBoundingClientRect();
+    const delta =
+      tileRect.left + tileRect.width / 2 - (railRect.left + railRect.width / 2);
+    rail.scrollBy({
+      left: delta,
+      behavior: reduce ? "auto" : "smooth",
+    });
+  }, [active, reduce]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (opened || closing) return;
@@ -317,17 +336,27 @@ export function BlogDrum({ posts, bodies, initialSlug }: Props) {
         <div className="max-w-3xl mx-auto">
           <div className="glass glass-inner-glow rounded-2xl px-3 py-3 relative overflow-hidden">
             <span className="glass-gloss rounded-2xl" />
-            <div className="relative z-10 flex items-stretch gap-1 overflow-x-auto no-scrollbar">
+            <div
+              ref={railRef}
+              className="relative z-10 flex items-stretch gap-1 overflow-x-auto no-scrollbar scroll-smooth"
+              style={{
+                maskImage:
+                  "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
+              }}
+            >
               {posts.map((p, i) => {
                 const isActive = i === active;
                 return (
                   <button
                     key={p.slug}
+                    data-tile-index={i}
                     onClick={() => {
                       if (closing) return;
                       setActive(i);
                     }}
-                    className="group relative flex-1 min-w-[72px] text-left px-2.5 py-1.5 rounded-lg transition-colors"
+                    className="group relative flex-1 min-w-[96px] text-left px-2.5 py-1.5 rounded-lg transition-colors"
                     aria-label={`Go to ${p.title}`}
                     aria-current={isActive}
                   >
