@@ -1,0 +1,21 @@
+---
+title: "TypeScript 模板字面量的实用场景"
+date: "2026-01-12"
+excerpt: "Template literal types 不只是写出 'Hello, ${name}' 那么简单。一些被低估的用法。"
+tags: ["typescript", "dx"]
+maturity: "budding"
+---
+
+最常见的是从一个联合类型派生出 CSS 选择器、API 路径或事件名。
+
+```ts
+type Color = "red" | "blue";
+type Variant = "outline" | "solid";
+type ClassName = `btn-${Color}-${Variant}`;
+```
+
+四种组合,编译器自动展开。
+
+## 比想象的强
+
+进阶用法是配合 `infer` 做字符串解析。可以从 `"GET /users/:id"` 里把 `id` 这个参数名抽出来,在 handler 里类型自动安全。

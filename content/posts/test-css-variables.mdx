@@ -1,0 +1,18 @@
+---
+title: "CSS 自定义属性的隐藏能力"
+date: "2025-08-01"
+excerpt: "var(--x) 不只是变量。它是运行时的、可继承的、可被 JS 写的样式插槽。"
+tags: ["css", "design"]
+maturity: "evergreen"
+---
+
+最被低估的用法是**让组件用 CSS var 暴露"插槽"**,而不是 prop:
+
+```css
+.button {
+  background: var(--button-bg, var(--accent));
+  padding: var(--button-padding, 0.5em 1em);
+}
+```
+
+外层只需 `style={{ "--button-bg": "red" }}` 就改了。比 React 的 className 注入或 prop drilling 干净得多。

@@ -1,0 +1,11 @@
+---
+title: "RSC 在边界条件下的细节"
+date: "2025-07-10"
+excerpt: "React Server Components 的心智模型清晰,但边界条件总有坑。"
+tags: ["react", "ssr"]
+maturity: "budding"
+---
+
+最常踩的:**用 React Context 在 RSC 边界两侧传东西**。Context 只在 Client Component 子树里活。在 Server Component 里读不到。
+
+替代方案:函数参数往下传(显式),或用 `cache()` 包装数据获取(per-request memoize)。

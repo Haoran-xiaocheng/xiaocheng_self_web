@@ -1,0 +1,11 @@
+---
+title: "焦点管理：模态框里的小陷阱"
+date: "2025-11-18"
+excerpt: "打开模态框时焦点要进去,关闭时要回到触发它的元素。听起来简单,做对了的项目不多。"
+tags: ["a11y", "react"]
+maturity: "seedling"
+---
+
+`document.activeElement` 在 useEffect 里记下来,关闭时 `restoreRef.current?.focus()` 还回去。
+
+中间还有"焦点环陷阱"(focus trap)的事——别让 Tab 跳出模态框去到背后的页面。

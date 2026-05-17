@@ -1,0 +1,17 @@
+---
+title: "SVG 动画的几种范式比较"
+date: "2025-03-08"
+excerpt: "SMIL、CSS、JS、Web Animations API,各有适用场景。一张速查表。"
+tags: ["svg", "animation"]
+maturity: "budding"
+---
+
+| 方式 | 强项 | 弱点 |
+|---|---|---|
+| SMIL (`<animate>`) | 声明式、跟着 SVG 走 | 浏览器支持不完整 |
+| CSS transform/transition | 简单、性能好 | 复杂时序难表达 |
+| Framer Motion | 弹簧物理、组合 | bundle 大 |
+| WAAPI | 原生、可控 | API 略繁琐 |
+| GSAP | 极致控制 | 商用收费 |
+
+对小动画用 CSS,中复杂度用 Framer,演示级别复杂用 GSAP。

@@ -1,0 +1,11 @@
+---
+title: "暗色主题的 token 拆分"
+date: "2025-12-28"
+excerpt: "做暗色模式时,直接把每个 hex 翻一遍不够。颜色 token 至少要拆成 raw 和 semantic 两层。"
+tags: ["css", "design"]
+maturity: "seedling"
+---
+
+`--ink: #1f1d1a` 是 raw,`--text-primary: var(--ink)` 是 semantic。
+
+暗色模式只换 raw 层,semantic 层名字保持不变。这样组件代码完全不用改。

@@ -1,0 +1,11 @@
+---
+title: "GraphQL vs RPC：界面友好不等于易维护"
+date: "2025-08-22"
+excerpt: "前端能「自由查询」听上去很酷,代价是后端需要承担更复杂的权限和性能模型。"
+tags: ["api", "backend"]
+maturity: "budding"
+---
+
+GraphQL 把 N+1 问题、字段级权限、查询复杂度的天花板从前端转给了后端。后端如果没准备好,体验反而比 REST/RPC 更糟。
+
+我现在的偏好:小团队、UI 频繁迭代 → GraphQL;团队大、API 稳定、性能敏感 → 简单 RPC。

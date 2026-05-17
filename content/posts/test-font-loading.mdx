@@ -1,0 +1,13 @@
+---
+title: "字体加载策略：FOIT vs FOUT 之外"
+date: "2025-02-14"
+excerpt: "Web 字体加载的两个传统问题之外,还有 size-adjust 这个新玩具。"
+tags: ["performance", "typography"]
+maturity: "seedling"
+---
+
+`size-adjust` + `ascent-override` 让 fallback 字体能匹配 web font 的度量,加载完成时几乎看不到字宽跳动(CLS 接近 0)。
+
+工具:[Fontaine](https://github.com/danielroe/fontaine) 自动生成这些 override 规则。
+
+跟 `next/font` 配合用,首屏 CLS 能压到 0.01 以下。
